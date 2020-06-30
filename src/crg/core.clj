@@ -1,4 +1,4 @@
-(ns clojure-realworld-graphql.core)
+(ns crg.core)
 
 (defn foo
   "I don't do a whole lot."

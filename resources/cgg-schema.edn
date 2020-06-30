@@ -1,0 +1,21 @@
+{:objects
+ {:Article
+  {:description "A physical or virtual board game."
+   :fields
+                {:id          {:type (non-null Int)}
+                 :slug        {:type (non-null String)}
+                 :title       {:type String}
+                 :description {:type String}
+                 :body        {:type        String
+                               :description "A one-line summary of the game."}}}}
+
+
+ :queries
+ {:article
+  {:type        :Article
+   :description "Access an article by its unique slug, if it exists."
+   :args
+                {:slug {:type String}}
+   :resolve     :query/article-by-slug}}}
+
+
