@@ -22,7 +22,7 @@
 
 (defn load-schema
   [component]
-  (-> (io/resource "cgg-schema.edn")
+  (-> (io/resource "crg-schema.edn")
       slurp
       edn/read-string
       (util/attach-resolvers (resolver-map component))
