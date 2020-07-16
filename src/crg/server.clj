@@ -1,23 +1,34 @@
 (ns crg.server
-  (:require [com.stuartsierra.component :as component]
-            [com.walmartlabs.lacinia.pedestal :as lp]
-            [io.pedestal.http :as http]))
+    (:require [com.stuartsierra.component :as component]
+      [com.walmartlabs.lacinia.pedestal :as lp]
+      [io.pedestal.http :as http]))
 
-(defrecord Server [schema-provider server port]
+(defn placeholder [map]
+  (print map)
+  map)
 
-  component/Lifecycle
-  (start [this]
-    (assoc this :server (-> schema-provider
-                            :schema
-                            (lp/service-map {:graphiql true
-                                             :port port})
-                            http/create-server
-                            http/start)))
-  (stop [this]
-    (http/stop server)
-    (assoc this :server nil)))
+(defn merge-values [map host]
+  (merge map {::http/host host}))
+
+(defrecord Server [schema-provider server port host]
+
+           component/Lifecycle
+           (start [this]
+                  (assoc this :server (-> schema-provider
+                                          :schema
+                                          (lp/service-map {:graphiql true
+                                                           :port     port})
+                                          (merge-values host)
+                                          (placeholder)
+                                          http/create-server
+                                          http/start)))
+           (stop [this]
+                 (http/stop server)
+                 (assoc this :server nil)))
 
 (defn new-server
-  []
-  {:server (component/using (map->Server {:port 8888})
-                           [:schema-provider])})
+      []
+      {:server (component/using (map->Server {
+                                              :port 8888
+                                              :host "0.0.0.0"})
+                                [:schema-provider])})
