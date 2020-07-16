@@ -18,7 +18,12 @@
 
   (start [this]
     (assoc this
-      :ds (pooled-data-source "localhost" "real_world_dev" "postgres" "postgres" 5432)))
+      :ds (pooled-data-source
+            (or (System/getenv "DB_HOST") "localhost")
+            (or (System/getenv "DB_NAME") "real_world_dev")
+            (or (System/getenv "DB_USER") "postgres")
+            (or (System/getenv "DB_PASS") "postgres")
+            (or (System/getenv "DB_PORT") 5432))))
 
   (stop [this]
     (-> ds :datasource .close)
