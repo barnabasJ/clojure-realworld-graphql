@@ -7,8 +7,18 @@
                  :title       {:type String}
                  :description {:type String}
                  :body        {:type        String
-                               :description "A one-line summary of the game."}}}}
+                               :description "A one-line summary of the game."}
+                 :tags {:type (list String)
+                        :resolve :article/tags-for-article}}}}
 
+ :enums
+ {:sort_order
+  {:values    [{:enum-value :ASC :description "Sort using ascending order"}
+               {:enum-value :DESC :description "Sort using descending order"}]}}
+ :scalars
+ {:DateTime
+  {:parse     :scalar/date-time-parse
+   :serialize :scalar/date-time-serialize}}
 
  :queries
  {:article

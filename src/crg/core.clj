@@ -1,6 +1,7 @@
-(ns crg.core)
+(ns crg.core
+  (:gen-class)
+  (:require [crg.system :as system]
+            [com.stuartsierra.component :as component]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn -main [& args]
+  (component/start (system/new-system)))

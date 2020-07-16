@@ -9,16 +9,39 @@
     [clojure.edn :as edn]
     ))
 
-
-(defn resolve-articel-by-slug
+(defn resolve-article-by-slug
   [db]
-  (fn [_, args, _]
+  (fn [context, args, container]
     (db/article-by-slug (:ds db) args)))
+
+(defn resolve-tags-for-article
+  [db]
+  (fn [context, args, container]
+    (->> container
+         (db/tags-for-article (:ds db))
+         (map #(:name %)))))
+
+
+(defn serialze-date-time [date-time]
+  (. date-time toString))
 
 (defn resolver-map
   [component]
   (let [db (:db component)]
-    {:query/article-by-slug (resolve-articel-by-slug db)}))
+    {:query/article-by-slug (resolve-article-by-slug db)
+     :article/tags-for-article (resolve-tags-for-article db)}))
+
+(defn scalar-map
+  []
+  {
+   :scalar/date-time-parse     serialze-date-time
+   :scalar/date-time-serialize  serialze-date-time
+   })
+
+(defn enum-map
+  []
+  {:sort_order {:parse identity
+   :serialize identity}})
 
 (defn load-schema
   [component]
@@ -26,6 +49,8 @@
       slurp
       edn/read-string
       (util/attach-resolvers (resolver-map component))
+      (util/attach-scalar-transformers (scalar-map))
+      (util/inject-enum-transformers (enum-map))
       schema/compile))
 
 (defrecord SchemaProvider [schema]

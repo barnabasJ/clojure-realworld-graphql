@@ -4,6 +4,7 @@
     [clojure.java.browse :refer [browse-url]]
     [crg.system :as system]
     [clojure.walk :as walk]
+    [reagi.core :as r]
     [com.stuartsierra.component :as component])
   (:import (clojure.lang IPersistentMap)))
 
@@ -33,7 +34,6 @@
       :schema
       (lacinia/execute query-string nil nil)
       simplify))
-
 
 (defn start
   []

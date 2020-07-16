@@ -12,3 +12,11 @@ select id,
 from articles
 where slug = :slug
 
+-- A :result value of :n below will return affected rows:
+-- :name tags-for-article :? :*
+-- :doc Selects the tags for an article
+select name
+from tags t
+         join article_tags a on t.id = a.tag_id
+where a.article_id = :id
+
