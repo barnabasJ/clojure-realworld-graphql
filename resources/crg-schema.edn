@@ -8,13 +8,37 @@
                  :description {:type String}
                  :body        {:type        String
                                :description "A one-line summary of the game."}
-                 :tags {:type (list String)
-                        :resolve :article/tags-for-article}}}}
+                 :tags        {:type    (list String)
+                               :resolve :article/tags-for-article}}}
+  :PageInfo
+  {:description "Pagination Information"
+   :fields
+                {:end_cursor    {:type String}
+                 :has_next_page {:type Boolean}}}
+
+  :ArticleEdge
+  {:description "Connection to an Article"
+   :fields
+                {:node   {:type :Article}
+                 :cursor {:type String}}}
+
+  :ArticleConnection
+  {:description "Article Connection for Pagination"
+   :fields
+                {:edges       {:type (list :ArticleEdge)}
+                 :page_info   {:type :PageInfo}
+                 :total_count {:type Int}}}}
+ :input-objects
+ {:ArticleFilter
+  {:description "Filters for articles"
+   :fields
+                {:tag    {:type String}
+                 }}}
 
  :enums
  {:sort_order
-  {:values    [{:enum-value :ASC :description "Sort using ascending order"}
-               {:enum-value :DESC :description "Sort using descending order"}]}}
+  {:values [{:enum-value :ASC :description "Sort using ascending order"}
+            {:enum-value :DESC :description "Sort using descending order"}]}}
  :scalars
  {:DateTime
   {:parse     :scalar/date-time-parse
@@ -26,6 +50,13 @@
    :description "Access an article by its unique slug, if it exists."
    :args
                 {:slug {:type String}}
-   :resolve     :query/article-by-slug}}}
+   :resolve     :query/article-by-slug}
+  :articles
+  {:type        :ArticleConnection
+   :description "Paginate through articles"
+   :args        {:filter    {:type :ArticleFilter}
+                 :cursor    {:type String}
+                 :page_size {:type Int :default-value 20}}
+   :resolve     :query/articles}}}
 
 
